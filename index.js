@@ -25,12 +25,12 @@ loadPDF();
 exports.handler = function (event, context, callback) {
 
     var mailOptions = {
-        //from: "janec2432@gmail.com",
-        from: "principle_email",
+        from: "janec2432@gmail.com",
+        //from: "principle_email",
         subject: "This is an email sent from a Lambda function!",
         html: `<p>You got a contact message, key info: <b>${JSON.stringify(event)}</b></p>`,
-        //to: "ethan.yijun@gmail.com",
-        to: "principle_email",
+        to: "ethan.yijun@gmail.com",
+        //to: "principle_email",
         attachments: [
             {
                 filename: "Attachment.pdf",
