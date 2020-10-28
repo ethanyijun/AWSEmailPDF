@@ -8,10 +8,8 @@ var pdfBuffer;
 async function loadPDF() {
     pdfBuffer = await new Promise(resolve => {
         const doc = new PDFDocument()
-      
         doc.text('hello world', 100, 50)
         doc.end()
-      
         //Finalize document and convert to buffer array
         let buffers = []
         doc.on("data", buffers.push.bind(buffers))
@@ -23,12 +21,11 @@ async function loadPDF() {
 }
 loadPDF();
 exports.handler = function (event, context, callback) {
-
     var mailOptions = {
         from: "janec2432@gmail.com",
         //from: "principle_email",
         subject: "This is an email sent from a Lambda function!",
-        html: `<p>You got a contact message, key info: <b>${JSON.stringify(event)}</b></p>`,
+        html: `<p>You got a contact message, key info: <b>${(event.Result.Status)}</b></p>`,
         to: "ethan.yijun@gmail.com",
         //to: "principle_email",
         attachments: [
@@ -39,20 +36,19 @@ exports.handler = function (event, context, callback) {
         ]
         // bcc: Any BCC address you want here in an array,
     };
-
     // create Nodemailer SES transporter
     var transporter = nodemailer.createTransport({
         SES: ses
     });
-
     // send email
-    transporter.sendMail(mailOptions, function (err, info) {
+    transporter.sendMail(mailOptions, function (err, data) {
+        callback(null, {err: err, data: data});
         if (err) {
-            console.log("Error sending email");
-            callback(err);
+            console.log(err);
+            context.fail(err);
         } else {
-            console.log("Email sent successfully");
-            callback();
+            console.log(data);
+            context.succeed(event);
         }
     });
 };
