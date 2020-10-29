@@ -1,54 +1,53 @@
 const PDFDocument = require('pdfkit');
 var aws = require("aws-sdk");
 var nodemailer = require("nodemailer");
-
 var ses = new aws.SES();
-var s3 = new aws.S3();
-var pdfBuffer;
-async function loadPDF() {
-    pdfBuffer = await new Promise(resolve => {
-        const doc = new PDFDocument()
-        doc.text('hello world', 100, 50)
-        doc.end()
-        //Finalize document and convert to buffer array
-        let buffers = []
-        doc.on("data", buffers.push.bind(buffers))
-        doc.on("end", () => {
-          let pdfData = new Uint8Array(Buffer.concat(buffers))
-          resolve(pdfData)
-        })
-      })
-}
-loadPDF();
+
 exports.handler = function (event, context, callback) {
-    var mailOptions = {
-        from: "janec2432@gmail.com",
-        //from: "principle_email",
-        subject: "This is an email sent from a Lambda function!",
-        html: `<p>You got a contact message, key info: <b>${(event.Result.Status)}</b></p>`,
-        to: "ethan.yijun@gmail.com",
-        //to: "principle_email",
-        attachments: [
-            {
-                filename: "Attachment.pdf",
-                content: pdfBuffer
-            }
-        ]
-        // bcc: Any BCC address you want here in an array,
-    };
-    // create Nodemailer SES transporter
-    var transporter = nodemailer.createTransport({
-        SES: ses
+    let pdf = new PDFDocument();
+
+    let buffers = [];
+    pdf.on('data', buffers.push.bind(buffers));
+    pdf.on('end', () => {
+    
+        let pdfData = Buffer.concat(buffers);
+    
+        const mailOptions = {
+            from: 'janec2432@gmail.com',
+            to: "ethan.yijun@gmail.com",
+            attachments: [{
+                filename: 'attachment.pdf',
+                content: pdfData
+            }]
+        };
+    
+        mailOptions.subject = 'PDF in mail';
+        mailOptions.text = 'PDF attached';
+        var transporter = nodemailer.createTransport({
+            SES: ses
+        });
+        return transporter.sendMail(mailOptions).then(() => {
+            console.log('email sent:');
+        }).catch(error => {
+            console.error('There was an error while sending the email:', error);
+        });
+    
     });
-    // send email
-    transporter.sendMail(mailOptions, function (err, data) {
-        callback(null, {err: err, data: data});
-        if (err) {
-            console.log(err);
-            context.fail(err);
-        } else {
-            console.log(data);
-            context.succeed(event);
-        }
-    });
+    const randomNumber = Math.floor(Math.random() * Math.floor(100));
+    let dateObj = new Date();
+    let month = dateObj.getUTCMonth() + 1; //months from 1-12
+    let year = dateObj.getUTCFullYear();
+    const contract = "AS4000";
+
+    const currentDateTime = year + "/" + month;
+    pdf.text(`Claim Title: ${event.data.claim_title} Contract Claim No: ${randomNumber} Principle: ${event.data.submitted_by}`, {
+        align: 'center'
+      }
+    );
+    pdf.moveDown();
+    pdf.text(`Claim month: ${currentDateTime} Claim Amount: ${event.data.amount} Contract: ${contract}`, {
+        align: 'center'
+      }
+    );
+    pdf.end();
 };
