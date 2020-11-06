@@ -52,6 +52,8 @@ exports.handler = function (event, context, callback) {
         align: 'center'
       }
     );
+    pdf.image('images/2.png', 0, 15, {width: 300})
+   .text('Proportional to width', 0, 0);
     pdf.fontSize(6).text('Date: ', 70, 40)
     pdf.font('Times-Roman').fontSize(25).text('Project A', 250, 50);
     pdf.font('Times-Roman').fontSize(16).text('Engineering Services - Progress Claim 2 Report', 150, 80);
