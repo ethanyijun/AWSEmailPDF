@@ -14,7 +14,7 @@ exports.handler = function (event, context, callback) {
     
         const mailOptions = {
             from: 'janec2432@gmail.com',
-            to: "ethan.yijun@gmail.com",
+            to: event.data.superintendent_email,
             attachments: [{
                 filename: 'attachment.pdf',
                 content: pdfData
@@ -26,10 +26,13 @@ exports.handler = function (event, context, callback) {
         var transporter = nodemailer.createTransport({
             SES: ses
         });
+
         return transporter.sendMail(mailOptions).then(() => {
             console.log('email sent:');
+            callback(null, {data: event.data});
         }).catch(error => {
             console.error('There was an error while sending the email:', error);
+            callback(null, {err: error, data: event.data});
         });
     
     });
@@ -49,5 +52,16 @@ exports.handler = function (event, context, callback) {
         align: 'center'
       }
     );
+    pdf.fontSize(6).text('Date: ', 70, 40)
+    pdf.font('Times-Roman').fontSize(25).text('Project A', 250, 50);
+    pdf.font('Times-Roman').fontSize(16).text('Engineering Services - Progress Claim 2 Report', 150, 80);
+    pdf.fontSize(8).text('Contract Claim No:', 70, 140);
+    pdf.fontSize(8).text('Claim Month:', 200, 140);
+    pdf.fontSize(8).text('Claim Period:', 310, 140);
+    pdf.fontSize(8).text('Contract ', 70, 180);
+    pdf.fontSize(8).text('Vendor:', 200, 180);
+
+    pdf.text('URL of the 1.png',{width: 50, height: 50});
+    pdf.text('URL of the 2.png',{width: 50, height: 50});
     pdf.end();
 };
