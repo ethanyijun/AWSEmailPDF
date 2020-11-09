@@ -14,15 +14,15 @@ exports.handler = function (event, context, callback) {
     
         const mailOptions = {
             from: 'janec2432@gmail.com',
-            to: event.data.superintendent_email,
+            to: event.superintendent_email,
             attachments: [{
                 filename: 'attachment.pdf',
                 content: pdfData
             }]
         };
     
-        mailOptions.subject = 'PDF in mail';
-        mailOptions.text = 'PDF attached';
+        mailOptions.subject = 'Payment Claim Certificate';
+        mailOptions.text = 'Hi, please find the payment certificate that has been approved by you in the attachment.';
         var transporter = nodemailer.createTransport({
             SES: ses
         });
@@ -43,27 +43,43 @@ exports.handler = function (event, context, callback) {
     const contract = "AS4000";
 
     const currentDateTime = year + "/" + month;
-    pdf.text(`Claim Title: ${event.data.claim_title} Contract Claim No: ${randomNumber} Principle: ${event.data.submitted_by}`, {
-        align: 'center'
-      }
-    );
-    pdf.moveDown();
-    pdf.text(`Claim month: ${currentDateTime} Claim Amount: ${event.data.amount} Contract: ${contract}`, {
-        align: 'center'
-      }
-    );
-    pdf.image('images/2.png', 0, 15, {width: 300})
-   .text('Proportional to width', 0, 0);
-    pdf.fontSize(6).text('Date: ', 70, 40)
-    pdf.font('Times-Roman').fontSize(25).text('Project A', 250, 50);
-    pdf.font('Times-Roman').fontSize(16).text('Engineering Services - Progress Claim 2 Report', 150, 80);
-    pdf.fontSize(8).text('Contract Claim No:', 70, 140);
-    pdf.fontSize(8).text('Claim Month:', 200, 140);
-    pdf.fontSize(8).text('Claim Period:', 310, 140);
-    pdf.fontSize(8).text('Contract ', 70, 180);
-    pdf.fontSize(8).text('Vendor:', 200, 180);
 
-    pdf.text('URL of the 1.png',{width: 50, height: 50});
-    pdf.text('URL of the 2.png',{width: 50, height: 50});
+
+    pdf.image('images/1.png', 50, 45, {width: 100})
+    pdf.image('images/2.png', 450, 45, {width: 100})
+   .text('Date', 60, 120);
+
+    pdf.moveDown()
+    pdf.font('Helvetica-Bold').fontSize(25).text(`Claim Title: ${event.claim_title} `,{align: 'center',paragraphGap:'2'});
+    
+    pdf.font('Times-Italic').fontSize(16).text(`Engineering Services - Progress Claim 2 Report: ${randomNumber} `, {align: 'center'});
+    pdf.moveDown();
+
+    pdf.font('Times-Bold').fontSize(12).text('Contract Claim No:', 80, 250);
+    pdf.font('Times-Bold').fontSize(12).text('Claim Month:', 350, 250);
+
+    pdf.font('Times-Bold').fontSize(12).text('Claim Period:', 80, 290);
+    pdf.font('Times-Bold').fontSize(12).text('Contract ', 350, 290);
+
+    pdf.font('Times-Bold').fontSize(12).text('Vendor:', 80, 330);
+    pdf.moveDown();
+
+    pdf.font('Times-Bold').fontSize(10).text('Title', 50, 400);
+    pdf.font('Times-Bold').fontSize(10).text('Approved Contract Value', 100, 400);
+
+    pdf.font('Times-Bold').fontSize(10).text('%Completed', 230, 400);
+    pdf.font('Times-Bold').fontSize(10).text('Previously Claimed', 300, 400);
+
+    pdf.font('Times-Bold').fontSize(10).text('Total Claim', 410, 400);
+    pdf.font('Times-Bold').fontSize(10).text('Net Claim', 490, 400);
+
+
+    pdf.moveTo(65,260).lineTo(500,260).fillAndStroke("#B0E0E6");
+    pdf.moveTo(65,300).lineTo(500,300).fillAndStroke("#B0E0E6");
+    pdf.moveTo(65,340).lineTo(500,340).fillAndStroke("#B0E0E6");
+    pdf.moveTo(45,410).lineTo(550,410).fillAndStroke("#B0E0E6");
+
+
+
     pdf.end();
 };
