@@ -55,13 +55,14 @@ exports.handler = function (event, context, callback) {
     pdf.font('Times-Italic').fontSize(16).text(`Engineering Services - Progress Claim 2 Report: ${randomNumber} `, {align: 'center'});
     pdf.moveDown();
 
-    pdf.font('Times-Bold').fontSize(12).text('Contract Claim No:', 80, 250);
-    pdf.font('Times-Bold').fontSize(12).text('Claim Month:', 350, 250);
+    pdf.font('Times-Bold').fontSize(12).text(`Contract Claim No: ${randomNumber}`, 80, 250);
+    pdf.font('Times-Bold').fontSize(12).text(`Claim Month: ${currentDateTime}`, 350, 250);
 
-    pdf.font('Times-Bold').fontSize(12).text('Claim Period:', 80, 290);
-    pdf.font('Times-Bold').fontSize(12).text('Contract ', 350, 290);
+    pdf.font('Times-Bold').fontSize(12).text(`Claim Period: - ${currentDateTime}`, 80, 290);
+    pdf.font('Times-Bold').fontSize(12).text(`Contract ${contract}`, 350, 290);
 
     pdf.font('Times-Bold').fontSize(12).text('Vendor:', 80, 330);
+    pdf.font('Times-Bold').fontSize(12).text(`Amount: ${event.amount}`, 350, 330);
     pdf.moveDown();
 
     pdf.font('Times-Bold').fontSize(10).text('Title', 50, 400);
