@@ -47,7 +47,7 @@ exports.handler = function (event, context, callback) {
 
     pdf.image('images/1.png', 50, 45, {width: 100})
     pdf.image('images/2.png', 450, 45, {width: 100})
-   .text('Date', 60, 120);
+   .text(`Date ${currentDateTime}`, 60, 120);
 
     pdf.moveDown()
     pdf.font('Helvetica-Bold').fontSize(25).text(`Claim Title: ${event.claim_title} `,{align: 'center',paragraphGap:'2'});
