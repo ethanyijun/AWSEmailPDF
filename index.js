@@ -1,7 +1,12 @@
 const PDFDocument = require('pdfkit');
 var aws = require("aws-sdk");
 var nodemailer = require("nodemailer");
-var ses = new aws.SES();
+aws.config.update({
+    region: "eu-central-1"
+});
+var ses = new aws.SES({
+    apiVersion: '2010-12-01'
+});
 
 exports.handler = function (event, context, callback) {
     let pdf = new PDFDocument();
