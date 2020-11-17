@@ -17,25 +17,31 @@ exports.handler = function (event, context, callback) {
     
         let pdfData = Buffer.concat(buffers);
     
-        const mailOptions = {
-            from: 'janec2432@gmail.com',
-            to: event.superintendent_email,
-            attachments: [{
-                filename: 'attachment.pdf',
-                content: pdfData
-            }]
-        };
-    
-        mailOptions.subject = 'Payment Claim Certificate';
-        mailOptions.text = 'Hi, please find the payment certificate that has been approved by you in the attachment.';
         var transporter = nodemailer.createTransport({
             SES: ses
         });
 
-        return transporter.sendMail(mailOptions).then(() => {
-            console.log('email sent:');
+        return transporter.sendMail({
+            from: 'janec2432@gmail.com',
+            To: [event.superintendent_email],
+            bcc: [event.superintendent_email],
+            subject: 'Payment Claim Certificate',
+            text : 'Hi, please find the payment certificate that has been approved by you in the attachment.',
+
+            attachments: [{
+                filename: 'attachment.pdf',
+                content: pdfData,
+                contentType: 'application/pdf'
+            }]
+        }).then(() => {
+            pdfData = null;
+            buffers = null;
+            context.succeed('The email was successfully sent');
             callback(null, {data: event.data});
         }).catch(error => {
+            pdfData = null;
+            buffers = null;
+            context.fail('Internal Error: The email could not be sent.');
             console.error('There was an error while sending the email:', error);
             callback(null, {err: error, data: event.data});
         });
