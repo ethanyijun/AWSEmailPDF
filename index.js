@@ -22,9 +22,9 @@ exports.handler = function (event, context, callback) {
         });
 
         return transporter.sendMail({
-            from: 'janec2432@gmail.com',
-            To: [event.superintendent_email],
-            bcc: [event.superintendent_email],
+            from: [event.superintendent_email],
+            To: [event.principle_email],
+            bcc: [event.principle_email],
             subject: 'Payment Claim Certificate',
             text : 'Hi, please find the payment certificate that has been approved by you in the attachment.',
 
