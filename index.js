@@ -26,7 +26,7 @@ exports.handler = function (event, context, callback) {
             To: [event.principle_email],
             bcc: [event.principle_email],
             subject: 'Payment Claim Certificate',
-            text : 'Hi, please find the payment certificate that has been approved by you in the attachment.',
+            text : 'Hi, please find the payment certificate that has been approved by the superintendent in the attachment.',
 
             attachments: [{
                 filename: 'attachment.pdf',
